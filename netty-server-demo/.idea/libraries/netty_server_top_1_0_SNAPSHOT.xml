@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="netty-server-top-1.0-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../netty-server-top/target/netty-server-top-1.0-SNAPSHOT.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
