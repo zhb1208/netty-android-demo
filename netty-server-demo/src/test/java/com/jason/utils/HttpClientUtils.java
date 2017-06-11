@@ -185,7 +185,7 @@ public class HttpClientUtils {
     }
 
     public static void cloudScan(){
-        String url = "http://localhost:8080/hesine";
+        String url = "http://localhost:8080/jason";
         // instance requestDto
         RequestDto requestDto = new RequestDto();
         SystemInfo systemInfo = new SystemInfo();
@@ -226,7 +226,7 @@ public class HttpClientUtils {
 
 
     public static void register(){
-        String url = "http://localhost:8080/hesine";
+        String url = "http://localhost:8080/jason";
         // instance requestDto
         RequestDto requestDto = new RequestDto();
         SystemInfo systemInfo = new SystemInfo();
@@ -265,7 +265,7 @@ public class HttpClientUtils {
     }
 
     public static void active(){
-        String url = "http://localhost:8080/hesine";
+        String url = "http://localhost:8080/jason";
         // instance requestDto
         RequestDto requestDto = new RequestDto();
         SystemInfo systemInfo = new SystemInfo();
@@ -299,7 +299,7 @@ public class HttpClientUtils {
     }
 
     public static void demo(){
-//        String url = "http://localhost:8080/hesine";
+//        String url = "http://localhost:8080/jason";
         String url = "http://localhost:8080";
         String content = "hello world!";
         // instance requestDto
