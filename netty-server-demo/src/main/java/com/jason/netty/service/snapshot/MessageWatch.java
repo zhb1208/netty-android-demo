@@ -5,6 +5,11 @@ package com.jason.netty.service.snapshot;
 
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author jason
@@ -15,22 +20,24 @@ import io.netty.handler.codec.http.HttpRequest;
  *         pay my respects to org.apache.commons.lang.time.StopWatch
  */
 public class MessageWatch {
-	
-//	private Logger log = Logger.getLogger(MessageWatch.class.getName());
-	
+
 	public static final int STATE_ALL = 0;
 	public static final int STATE_BUSINESS = 1;
+
+	private static Logger logger = LoggerFactory.getLogger(MessageWatch.class);
 
 	/**
 	 * 5 stopwatch, each has starttime&endtime
 	 */
-	private long[][] stopwatch = new long[5][2];
-
+	private long[][] stopwatch = new long[6][2];
 	private HttpRequest request;
 	private String remoteIP;
+	private int responseCode = 200;
+	private boolean boolBusi = false;
+	private Map<String, Integer> subBusiness = new HashMap<String, Integer>();
 
 	/**
-	 * 
+	 *
 	 */
 	public MessageWatch(HttpRequest request) {
 		this.stopwatch[STATE_ALL][0] = System.nanoTime();
@@ -73,8 +80,6 @@ public class MessageWatch {
 		return stopwatch[state][1] - stopwatch[state][0];
 	}
 
-	private int responseCode = 200;
-
 	public int getResponseCode() {
 		return responseCode;
 	}
@@ -93,13 +98,32 @@ public class MessageWatch {
 	public HttpRequest getRequest() {
 		return request;
 	}
-	
-	boolean bool_busi = false;
+
 	public boolean isBusiness() {
-		return bool_busi;
+		return boolBusi;
 	}
+
 	public void setBusiness() {
-		bool_busi = true;
+		boolBusi = true;
 		this.start(MessageWatch.STATE_BUSINESS);
+	}
+
+	public Map getSubBusiness() {
+		return subBusiness;
+	}
+
+	/**
+	 * 设置子业务
+	 *
+	 * @param name
+	 * @param index
+	 */
+	public void setSubBusiness(String name, int index) {
+		subBusiness.put(name, index);
+		this.start(index);
+	}
+
+	public void setRemoteIP(String remoteIP) {
+		this.remoteIP = remoteIP;
 	}
 }

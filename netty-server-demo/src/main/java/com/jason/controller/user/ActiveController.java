@@ -7,6 +7,7 @@ import com.jason.dto.ReplyDto;
 import com.jason.dto.RequestDto;
 import com.jason.dto.actioninfo.CommonActionData;
 import com.jason.netty.service.snapshot.MessageWatch;
+import com.jason.netty.service.snapshot.SubPointEnum;
 import com.jason.service.UserService;
 import com.jason.util.JSONTool;
 import com.jason.vo.user.User;
@@ -39,8 +40,9 @@ public class ActiveController implements BaseController {
     @Override
     public ReplyDto excute(RequestDto requestDto,
                            MessageWatch messageWatch) throws BusinessException {
-        // 业务开始
-        messageWatch.setBusiness();
+        // ACTIVE
+        messageWatch.setSubBusiness(SubPointEnum.ACTIVE.getName(),
+                SubPointEnum.ACTIVE.getIndex());
 
         ReplyDto replyDto = new ReplyDto();
         try{
@@ -68,10 +70,10 @@ public class ActiveController implements BaseController {
             replyData.put("replyData", JSONTool.toJSONString(replyCommonActionData));
             replyDto.setData(replyData);
 
-            // 业务结束
-            messageWatch.stop(MessageWatch.STATE_BUSINESS);
         } catch (Exception ex){
             throw new BusinessException("ActiveController_Exception", ex);
+        } finally {
+            messageWatch.stop(MessageWatch.STATE_BUSINESS);
         }
         return replyDto;
     }

@@ -122,7 +122,7 @@ public class BusinessConsoleHandler extends SimpleChannelInboundHandler<HttpObje
 		buffer.append("\n<body bgcolor=\"white\">");
 		buffer.append("<h1>StatSDK Server Console</h1>\n");
 		buffer.append("<h2>Snapshot query at " + new Date() + "</h2>\n");
-		buffer.append(snapshot.getWatchInfo(0, 1));
+		buffer.append(snapshot.getWatchInfo(0, 1, true));
 		buffer.append("\n</body>\n</html>");
 
 		return buffer.toString();

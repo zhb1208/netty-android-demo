@@ -8,11 +8,14 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.*;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static io.netty.handler.codec.http.HttpHeaders.Names.*;
 import static io.netty.handler.codec.http.HttpResponseStatus.OK;
@@ -34,6 +37,7 @@ public class BusinessServerHandler extends ChannelInboundHandlerAdapter {
     private MessageWatch messageWatch;
     private List<Exception> listException;
     private byte[] contentByte = null;
+    private String curUri;
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg)
@@ -47,7 +51,30 @@ public class BusinessServerHandler extends ChannelInboundHandlerAdapter {
             listException = new ArrayList<Exception>();
 
             String uri = request.getUri();
-            System.out.println("Uri:" + uri);
+            curUri = uri;
+
+            // new getMethod
+            if (log.isDebugEnabled()) {
+                log.info("request uri: " + uri);
+            }
+            HttpHeaders headers = request.headers();
+
+            // new getMethod
+            if (log.isDebugEnabled()) {
+                for (Map.Entry<String, String> entry : request.headers()) {
+                    log.info("HEADER: " + entry.getKey() + '=' + entry.getValue());
+                }
+            }
+
+            // get remoteIp
+            String clientIP = headers.get("X-Forwarded-For");
+            if (clientIP == null) {
+                InetSocketAddress insocket = (InetSocketAddress) ctx.channel()
+                        .remoteAddress();
+                clientIP = insocket.getAddress().getHostAddress();
+            }
+            clientIP = StringUtils.isNotBlank(clientIP)?clientIP:"null";
+            messageWatch.setRemoteIP(clientIP);
         }
         try {
             if (msg instanceof HttpContent) {
@@ -119,6 +146,7 @@ public class BusinessServerHandler extends ChannelInboundHandlerAdapter {
         } catch (Exception e) {
             log.error("BusinessServerHandler.channelRead Exception", e);
             // 异常监控
+            messageWatch.setBusiness();
             messageWatch.setResponseCode(Integer.parseInt(Constants.FAIL_CODE));
             messageWatch.stop(MessageWatch.STATE_BUSINESS);
             listException.add(e);

@@ -6,6 +6,7 @@ import com.jason.dto.ActionInfo;
 import com.jason.dto.ReplyDto;
 import com.jason.dto.RequestDto;
 import com.jason.netty.service.snapshot.MessageWatch;
+import com.jason.netty.service.snapshot.SubPointEnum;
 import com.jason.util.JSONTool;
 import com.jason.utils.Constants;
 import com.jason.utils.SpringBeanFactory;
@@ -54,6 +55,12 @@ public class BaseJsonProcessor {
      */
     public StringBuilder makeAppContent(String content)
             throws UnsupportedEncodingException {
+        // 业务开始
+        messageWatch.setBusiness();
+
+        // decode and parse json start
+        messageWatch.setSubBusiness(SubPointEnum.DECODEANDPARSEJSON.getName(),
+                SubPointEnum.DECODEANDPARSEJSON.getIndex());
         // 获取dto
         RequestDto requestDto = this.read(content);
         assert requestDto == null;
@@ -87,18 +94,7 @@ public class BaseJsonProcessor {
             //执行控制器
             BaseController baseController = SpringBeanFactory.getController(beanName);
             replyDto = baseController.excute(requestDto, this.messageWatch);
-//        } catch (ClassNotFoundException e) {
-//            replyDto = errorMsg(actionValue, replyDto);
-//            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-//        } catch (InvocationTargetException e) {
-//            replyDto = errorMsg(actionValue, replyDto);
-//            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-//        } catch (NoSuchMethodException e) {
-//            replyDto = errorMsg(actionValue, replyDto);
-//            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-//        } catch (IllegalAccessException e) {
-//            replyDto = errorMsg(actionValue, replyDto);
-//            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+
         } catch (BusinessException e) {
             replyDto = errorMsg(actionValue, replyDto);
             logger.error("BaseJsonProcessor.process BusinessException", e);
